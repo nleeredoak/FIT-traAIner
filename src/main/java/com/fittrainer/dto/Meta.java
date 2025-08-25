@@ -1,7 +1,10 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
 import java.util.List;
 
+/**
+ * DTO representing metadata about the fitness plan.
+ */
 public class Meta {
 
     private String plan_name;

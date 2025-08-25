@@ -1,5 +1,8 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
+/**
+ * DTO representing macronutrient breakdown in grams.
+ */
 public class Macros {
 
     private int protein_g;

@@ -1,8 +1,12 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DTO representing a complete fitness plan, including metadata, templates for meals and workouts,
+ * week overrides, and a calendar of days.
+ */
 public class FitnessPlan {
 
     private Meta meta;

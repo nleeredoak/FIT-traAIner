@@ -1,5 +1,9 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
+/**
+ * DTO representing a day in a fitness plan, including day number, weekday, type (rest or training),
+ * references to meal and workout templates, week number, and an optional note.
+ */
 public class Day {
 
     private int day;

@@ -1,10 +1,13 @@
-package com.fitnesstrainer.dto.templates;
+package com.fittrainer.dto.templates;
 
-import com.fitnesstrainer.dto.Macros;
-import com.fitnesstrainer.dto.Meal;
+import com.fittrainer.dto.Macros;
+import com.fittrainer.dto.Meal;
 
 import java.util.List;
 
+/**
+ * DTO representing a meal template with total calories, macros, and a list of meals.
+ */
 public class MealTemplate {
 
     private int calories;

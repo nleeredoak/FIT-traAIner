@@ -1,10 +1,13 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
-import com.fitnesstrainer.dto.templates.MealTemplate;
-import com.fitnesstrainer.dto.templates.Workout;
+import com.fittrainer.dto.templates.MealTemplate;
+import com.fittrainer.dto.templates.Workout;
 
 import java.util.Map;
 
+/**
+ * DTO representing templates for meals and workouts in a fitness plan.
+ */
 public class Templates {
 
     private Map<String, MealTemplate> meals; // "training_day", "rest_day"

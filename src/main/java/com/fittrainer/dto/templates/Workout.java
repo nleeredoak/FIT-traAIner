@@ -1,5 +1,8 @@
-package com.fitnesstrainer.dto.templates;
+package com.fittrainer.dto.templates;
 
+/**
+ * DTO representing a workout with type and duration in minutes.
+ */
 public class Workout {
 
     private String type;

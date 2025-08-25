@@ -1,7 +1,10 @@
-package com.fitnesstrainer.dto;
+package com.fittrainer.dto;
 
 import java.util.List;
 
+/**
+ * DTO representing a meal with a name and a list of food items.
+ */
 public class Meal {
 
     private String name;
