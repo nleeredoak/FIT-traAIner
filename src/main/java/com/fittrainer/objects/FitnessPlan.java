@@ -1,4 +1,4 @@
-package com.fittrainer.dto;
+package com.fittrainer.objects;
 
 import java.util.List;
 import java.util.Map;
@@ -9,17 +9,17 @@ import java.util.Map;
  */
 public class FitnessPlan {
 
-    private Meta meta;
+    private Metadata metadata;
     private Templates templates;
-    private Map<String, Object> week_overrides; // could create another class if you want
+    private Map<String, Object> weekOverrides;
     private List<Day> calendar;
 
-    public Meta getMeta() {
-        return meta;
+    public Metadata getMeta() {
+        return metadata;
     }
 
-    public void setMeta(Meta meta) {
-        this.meta = meta;
+    public void setMeta(Metadata metadata) {
+        this.metadata = metadata;
     }
 
     public Templates getTemplates() {
@@ -30,12 +30,12 @@ public class FitnessPlan {
         this.templates = templates;
     }
 
-    public Map<String, Object> getWeek_overrides() {
-        return week_overrides;
+    public Map<String, Object> getWeekOverrides() {
+        return weekOverrides;
     }
 
-    public void setWeek_overrides(Map<String, Object> week_overrides) {
-        this.week_overrides = week_overrides;
+    public void setWeekOverrides(Map<String, Object> weekOverrides) {
+        this.weekOverrides = weekOverrides;
     }
 
     public List<Day> getCalendar() {

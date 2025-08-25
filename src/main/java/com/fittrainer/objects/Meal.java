@@ -1,4 +1,4 @@
-package com.fittrainer.dto;
+package com.fittrainer.objects;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.fittrainer.dto;
+package com.fittrainer.objects;
 
 /**
  * DTO representing a day in a fitness plan, including day number, weekday, type (rest or training),
@@ -6,19 +6,19 @@ package com.fittrainer.dto;
  */
 public class Day {
 
-    private int day;
+    private DayOfWeek day;
     private String weekday;
-    private String type;             // "rest" or "training"
-    private String meals_template;   // reference to meal template
-    private String workout_template; // reference to workout template
+    private DayType type;             // "rest" or "training"
+    private String mealsTemplate;   // reference to meal template
+    private String workoutTemplate; // reference to workout template
     private int week;
     private String note;             // optional
 
-    public int getDay() {
+    public DayOfWeek getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(DayOfWeek day) {
         this.day = day;
     }
 
@@ -30,28 +30,28 @@ public class Day {
         this.weekday = weekday;
     }
 
-    public String getType() {
+    public DayType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DayType type) {
         this.type = type;
     }
 
-    public String getMeals_template() {
-        return meals_template;
+    public String getMealsTemplate() {
+        return mealsTemplate;
     }
 
     public void setMeals_template(String meals_template) {
-        this.meals_template = meals_template;
+        this.mealsTemplate = meals_template;
     }
 
     public String getWorkout_template() {
-        return workout_template;
+        return workoutTemplate;
     }
 
     public void setWorkout_template(String workout_template) {
-        this.workout_template = workout_template;
+        this.workoutTemplate = workout_template;
     }
 
     public int getWeek() {

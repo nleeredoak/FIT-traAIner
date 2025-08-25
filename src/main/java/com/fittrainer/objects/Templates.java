@@ -1,7 +1,7 @@
-package com.fittrainer.dto;
+package com.fittrainer.objects;
 
-import com.fittrainer.dto.templates.MealTemplate;
-import com.fittrainer.dto.templates.Workout;
+import com.fittrainer.objects.templates.MealTemplate;
+import com.fittrainer.objects.templates.WorkoutTemplate;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 public class Templates {
 
     private Map<String, MealTemplate> meals; // "training_day", "rest_day"
-    private Map<String, Workout> workouts;   // keyed by weekday
+    private Map<String, WorkoutTemplate> workouts;   // keyed by weekday
 
     public Map<String, MealTemplate> getMeals() {
         return meals;
@@ -21,11 +21,11 @@ public class Templates {
         this.meals = meals;
     }
 
-    public Map<String, Workout> getWorkouts() {
+    public Map<String, WorkoutTemplate> getWorkouts() {
         return workouts;
     }
 
-    public void setWorkouts(Map<String, Workout> workouts) {
+    public void setWorkouts(Map<String, WorkoutTemplate> workouts) {
         this.workouts = workouts;
     }
 }

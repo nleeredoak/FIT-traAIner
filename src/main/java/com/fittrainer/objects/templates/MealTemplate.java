@@ -1,7 +1,7 @@
-package com.fittrainer.dto.templates;
+package com.fittrainer.objects.templates;
 
-import com.fittrainer.dto.Macros;
-import com.fittrainer.dto.Meal;
+import com.fittrainer.objects.Macros;
+import com.fittrainer.objects.Meal;
 
 import java.util.List;
 

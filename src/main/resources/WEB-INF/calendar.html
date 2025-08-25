@@ -1,370 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Interactive Fitness Calendar (Precise Drag & Drop)</title>
-  <style>
-    :root { --bg:#0b0f14; --card:#121822; --muted:#8ea2b6; --text:#e8eef7; --accent:#7cc6ff; --accent-2:#8fffab; --border:#1e2735; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; background: var(--bg); color: var(--text); }
-    header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:#0e141c; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
-    .title { font-weight:800; letter-spacing:.2px; }
-    .toolbar { display:flex; gap:8px; flex-wrap:wrap; }
-    button,label.btn { background:var(--card); border:1px solid var(--border); color:var(--text); padding:8px 12px; border-radius:10px; cursor:pointer; transition:.2s; font-size:14px; }
-    button:hover,label.btn:hover{ border-color:var(--accent); }
+    <metadata charset="utf-8"/>
+    <metadata name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Interactive Fitness Calendar (Precise Drag & Drop)</title>
+    <style>
+        :root {
+            --bg: #0b0f14;
+            --card: #121822;
+            --muted: #8ea2b6;
+            --text: #e8eef7;
+            --accent: #7cc6ff;
+            --accent-2: #8fffab;
+            --border: #1e2735;
+        }
 
-    .wrap{ padding:20px; max-width:1200px; margin:0 auto; }
-    .meta { display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:end; margin-bottom:12px; }
-    .pill { border:1px solid var(--border); border-radius:999px; padding:6px 10px; color:var(--muted); font-size:12px; }
+        * {
+            box-sizing: border-box;
+        }
 
-    .calendar { display:grid; grid-template-columns: repeat(7,1fr); gap:10px; }
-    .weekday { text-align:center; color:#9db2c7; font-weight:700; margin:6px 0 10px; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
 
-    .day { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px; min-height:200px; display:flex; flex-direction:column; gap:8px; }
-    .day.drag-over { outline:2px dashed var(--accent); }
-    .day-header { display:flex; align-items:baseline; justify-content:space-between; }
-    .badges { display:flex; gap:6px; align-items:center; }
-    .badge { font-size:11px; padding:3px 8px; border-radius:999px; border:1px solid var(--border); color:#a7b4c2; }
-    .badge.training{ color:#9ce7ff; border-color:#214861; }
-    .badge.rest{ color:#c1c8d1; border-color:#2d394a; }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #0e141c;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-    .stack { display:flex; flex-direction:column; gap:8px; min-height:120px; }
-    .card { background:#0f1620; border:1px solid var(--border); border-radius:12px; padding:10px; display:flex; gap:10px; align-items:flex-start; cursor:grab; }
-    .card:active { cursor:grabbing; }
-    .card.meal{ border-left:3px solid var(--accent); }
-    .card.workout{ border-left:3px solid var(--accent-2); }
-    .card-title{ font-weight:700; margin-bottom:4px; }
-    .card small { color: var(--muted); }
+        .title {
+            font-weight: 800;
+            letter-spacing: .2px;
+        }
 
-    .drop-indicator{ height:2px; background:var(--accent); border-radius:1px; margin:4px 0; opacity:.95; }
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-    .filters { display:flex; gap:8px; align-items:center; }
-    .toggle { display:inline-flex; gap:6px; align-items:center; border:1px solid var(--border); padding:6px 10px; border-radius:999px; background:#0f1620; }
-    .toggle input { accent-color: var(--accent); }
+        button, label.btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .2s;
+            font-size: 14px;
+        }
 
-    .footer{ margin-top:16px; display:flex; gap:12px; align-items:center; color:#a9b6c6; }
-    .totals{ margin-left:auto; }
+        button:hover, label.btn:hover {
+            border-color: var(--accent);
+        }
 
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+        .wrap {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    @media (max-width: 900px){ .calendar{ grid-template-columns:1fr; } .weekday{ display:none; } }
-  </style>
+        .metadata {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: end;
+            margin-bottom: 12px;
+        }
+
+        .pill {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            color: #9db2c7;
+            font-weight: 700;
+            margin: 6px 0 10px;
+        }
+
+        .day {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .day.drag-over {
+            outline: 2px dashed var(--accent);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .badges {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: #a7b4c2;
+        }
+
+        .badge.training {
+            color: #9ce7ff;
+            border-color: #214861;
+        }
+
+        .badge.rest {
+            color: #c1c8d1;
+            border-color: #2d394a;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 120px;
+        }
+
+        .card {
+            background: #0f1620;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            cursor: grab;
+        }
+
+        .card:active {
+            cursor: grabbing;
+        }
+
+        .card.meal {
+            border-left: 3px solid var(--accent);
+        }
+
+        .card.workout {
+            border-left: 3px solid var(--accent-2);
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card small {
+            color: var(--muted);
+        }
+
+        .drop-indicator {
+            height: 2px;
+            background: var(--accent);
+            border-radius: 1px;
+            margin: 4px 0;
+            opacity: .95;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toggle {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #0f1620;
+        }
+
+        .toggle input {
+            accent-color: var(--accent);
+        }
+
+        .footer {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: #a9b6c6;
+        }
+
+        .totals {
+            margin-left: auto;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 900px) {
+            .calendar {
+                grid-template-columns:1fr;
+            }
+
+            .weekday {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 <header>
-  <div class="title">🗓️ Interactive Fitness Calendar</div>
-  <div class="toolbar">
-    <button id="exportBtn" title="Download current state as JSON">Export JSON</button>
-    <label class="btn" for="importInput" title="Load JSON">Import JSON</label>
-    <input id="importInput" type="file" accept="application/json" class="sr-only" />
-    <button id="resetBtn" title="Reset to defaults">Reset</button>
-  </div>
+    <div class="title">🗓️ Interactive Fitness Calendar</div>
+    <div class="toolbar">
+        <button id="exportBtn" title="Download current state as JSON">Export JSON</button>
+        <label class="btn" for="importInput" title="Load JSON">Import JSON</label>
+        <input id="importInput" type="file" accept="application/json" class="sr-only"/>
+        <button id="resetBtn" title="Reset to defaults">Reset</button>
+    </div>
 </header>
 
 <div class="wrap">
-  <div class="meta">
-    <div>
-      <div id="planName" style="font-weight:800; font-size:18px; margin-bottom:4px"></div>
-      <div class="pill" id="planNote"></div>
+    <div class="metadata">
+        <div>
+            <div id="planName" style="font-weight:800; font-size:18px; margin-bottom:4px"></div>
+            <div class="pill" id="planNote"></div>
+        </div>
+        <div class="filters">
+            <label class="toggle"><input type="checkbox" id="toggleMeals" checked/> Show Meals</label>
+            <label class="toggle"><input type="checkbox" id="toggleWorkouts" checked/> Show Workouts</label>
+        </div>
     </div>
-    <div class="filters">
-      <label class="toggle"><input type="checkbox" id="toggleMeals" checked /> Show Meals</label>
-      <label class="toggle"><input type="checkbox" id="toggleWorkouts" checked /> Show Workouts</label>
-    </div>
-  </div>
 
-  <div class="calendar" id="calendar"></div>
-  <div class="footer">
-    <span>Drag a card and drop it between others to place it <em>exactly</em> where you want.</span>
-    <span class="totals" id="totals"></span>
-  </div>
+    <div class="calendar" id="calendar"></div>
+    <div class="footer">
+        <span>Drag a card and drop it between others to place it <em>exactly</em> where you want.</span>
+        <span class="totals" id="totals"></span>
+    </div>
 </div>
 
 <script>
-/******************************
- * PLAN JSON (durations only) *
- ******************************/
-const DEFAULT_PLAN = {
-  "meta": {
-    "plan_name": "Lean Mass + Sub-20 5K (30 Days)",
-    "goal_weight_gain_lbs": 10,
-    "duration_days": 30,
-    "rest_days": ["Monday", "Friday"],
-    "training_days": ["Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"],
-    "notes": "Repeat for a second month. Increase weights 2–5% when you hit the top of the rep range. Add ~200–250 kcal/day if weekly weight gain is <1 lb."
-  },
-  "templates": {
-    "meals": {
-      "training_day": {
-        "calories": 3100,
-        "macros": { "protein_g": 165, "carbs_g": 400, "fat_g": 75 },
-        "meals": [
-          { "name": "Breakfast", "items": ["4 whole eggs scrambled with spinach (olive oil)", "2 slices whole-grain toast", "1 cup oats with banana and honey"] },
-          { "name": "Snack", "items": ["1 cup Greek yogurt", "1 tbsp peanut butter", "1 apple"] },
-          { "name": "Lunch", "items": ["6 oz grilled chicken breast", "1 cup cooked quinoa", "1 cup mixed roasted vegetables", "1/2 avocado"] },
-          { "name": "Pre-Workout", "items": ["2 rice cakes with 1 tbsp peanut butter", "1 whey protein shake (water)"] },
-          { "name": "Dinner (Post-Workout)", "items": ["6 oz salmon or steak", "1 medium sweet potato", "1–2 cups broccoli (olive oil drizzle)", "1 slice whole-grain bread"] },
-          { "name": "Evening Snack", "items": ["1 cup cottage cheese", "Handful of walnuts or casein shake"] }
-        ]
-      },
-      "rest_day": {
-        "calories": 2750,
-        "macros": { "protein_g": 175, "carbs_g": 300, "fat_g": 80 },
-        "meals": [
-          { "name": "Breakfast", "items": ["3 eggs + 2 egg whites (scrambled)", "1 slice whole-grain toast", "1/2 cup oats with blueberries"] },
-          { "name": "Snack", "items": ["Whey protein shake (unsweetened almond milk)", "Handful of almonds"] },
-          { "name": "Lunch", "items": ["7 oz grilled turkey breast", "1 cup brown rice", "Steamed broccoli", "1 tbsp olive oil"] },
-          { "name": "Snack", "items": ["Plain Greek yogurt", "1 tbsp ground flax seeds", "1/2 banana"] },
-          { "name": "Dinner", "items": ["6 oz lean steak or chicken thigh", "1 baked potato with Greek yogurt topping", "Roasted zucchini and peppers"] },
-          { "name": "Evening Snack", "items": ["1/2 cup cottage cheese", "1 tbsp almond butter"] }
-        ]
-      }
-    },
-    "workouts": {
-      "Tuesday": { "type": "Strength - Upper Push/Pull", "duration_minutes": 60 },
-      "Wednesday": { "type": "Run Intervals – Speed", "duration_minutes": 45 },
-      "Thursday": { "type": "Strength - Lower & Power", "duration_minutes": 65 },
-      "Saturday": { "type": "Strength - Full Body Hybrid", "duration_minutes": 70 },
-      "Sunday": { "type": "Run – Long/Tempo", "duration_minutes": 50 },
-      "Monday": { "type": "Rest", "duration_minutes": 0 },
-      "Friday": { "type": "Rest", "duration_minutes": 0 }
+    /******************************
+     * PLAN JSON (durations only) *
+     ******************************/
+    const DEFAULT_PLAN = {
+        "metadata": {
+            "plan_name": "Lean Mass + Sub-20 5K (30 Days)",
+            "goal_weight_gain_lbs": 10,
+            "duration_days": 30,
+            "rest_days": ["Monday", "Friday"],
+            "training_days": ["Tuesday", "Wednesday", "Thursday", "Saturday", "Sunday"],
+            "notes": "Repeat for a second month. Increase weights 2–5% when you hit the top of the rep range. Add ~200–250 kcal/day if weekly weight gain is <1 lb."
+        },
+        "templates": {
+            "meals": {
+                "training_day": {
+                    "calories": 3100,
+                    "macros": {"protein_g": 165, "carbs_g": 400, "fat_g": 75},
+                    "meals": [
+                        {
+                            "name": "Breakfast",
+                            "items": ["4 whole eggs scrambled with spinach (olive oil)", "2 slices whole-grain toast", "1 cup oats with banana and honey"]
+                        },
+                        {"name": "Snack", "items": ["1 cup Greek yogurt", "1 tbsp peanut butter", "1 apple"]},
+                        {
+                            "name": "Lunch",
+                            "items": ["6 oz grilled chicken breast", "1 cup cooked quinoa", "1 cup mixed roasted vegetables", "1/2 avocado"]
+                        },
+                        {
+                            "name": "Pre-Workout",
+                            "items": ["2 rice cakes with 1 tbsp peanut butter", "1 whey protein shake (water)"]
+                        },
+                        {
+                            "name": "Dinner (Post-Workout)",
+                            "items": ["6 oz salmon or steak", "1 medium sweet potato", "1–2 cups broccoli (olive oil drizzle)", "1 slice whole-grain bread"]
+                        },
+                        {
+                            "name": "Evening Snack",
+                            "items": ["1 cup cottage cheese", "Handful of walnuts or casein shake"]
+                        }
+                    ]
+                },
+                "rest_day": {
+                    "calories": 2750,
+                    "macros": {"protein_g": 175, "carbs_g": 300, "fat_g": 80},
+                    "meals": [
+                        {
+                            "name": "Breakfast",
+                            "items": ["3 eggs + 2 egg whites (scrambled)", "1 slice whole-grain toast", "1/2 cup oats with blueberries"]
+                        },
+                        {
+                            "name": "Snack",
+                            "items": ["Whey protein shake (unsweetened almond milk)", "Handful of almonds"]
+                        },
+                        {
+                            "name": "Lunch",
+                            "items": ["7 oz grilled turkey breast", "1 cup brown rice", "Steamed broccoli", "1 tbsp olive oil"]
+                        },
+                        {"name": "Snack", "items": ["Plain Greek yogurt", "1 tbsp ground flax seeds", "1/2 banana"]},
+                        {
+                            "name": "Dinner",
+                            "items": ["6 oz lean steak or chicken thigh", "1 baked potato with Greek yogurt topping", "Roasted zucchini and peppers"]
+                        },
+                        {"name": "Evening Snack", "items": ["1/2 cup cottage cheese", "1 tbsp almond butter"]}
+                    ]
+                }
+            },
+            "workouts": {
+                "Tuesday": {"type": "Strength - Upper Push/Pull", "duration_minutes": 60},
+                "Wednesday": {"type": "Run Intervals – Speed", "duration_minutes": 45},
+                "Thursday": {"type": "Strength - Lower & Power", "duration_minutes": 65},
+                "Saturday": {"type": "Strength - Full Body Hybrid", "duration_minutes": 70},
+                "Sunday": {"type": "Run – Long/Tempo", "duration_minutes": 50},
+                "Monday": {"type": "Rest", "duration_minutes": 0},
+                "Friday": {"type": "Rest", "duration_minutes": 0}
+            }
+        },
+        "week_overrides": {
+            "week_1": {"sunday_run_focus": "4 miles comfortable"},
+            "week_2": {"sunday_run_focus": "5 miles, last mile near goal pace"},
+            "week_3": {"sunday_run_focus": "6 miles steady"},
+            "week_4": {"sunday_run_focus": "4 miles progressive (start easy, finish fast)"}
+        },
+        "calendar": []
+    };
+
+    /****************************************
+     * State, helpers, and generators
+     ****************************************/
+    const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const $ = (s, r = document) => r.querySelector(s);
+
+    function clone(obj) {
+        return JSON.parse(JSON.stringify(obj));
     }
-  },
-  "week_overrides": {
-    "week_1": { "sunday_run_focus": "4 miles comfortable" },
-    "week_2": { "sunday_run_focus": "5 miles, last mile near goal pace" },
-    "week_3": { "sunday_run_focus": "6 miles steady" },
-    "week_4": { "sunday_run_focus": "4 miles progressive (start easy, finish fast)" }
-  },
-  "calendar": []
-};
 
-/****************************************
- * State, helpers, and generators
- ****************************************/
-const WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-const $ = (s, r=document) => r.querySelector(s);
-function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
+    function generateDefaultCalendar(plan) {
+        if (Array.isArray(plan.calendar) && plan.calendar.length === plan.metadata.duration_days) return plan;
+        const p = clone(plan);
+        p.calendar = [];
+        for (let d = 1; d <= p.metadata.duration_days; d++) {
+            const weekday = WEEKDAYS[(d - 1) % 7];
+            const isRest = p.metadata.rest_days.includes(weekday);
+            p.calendar.push({
+                day: d, weekday,
+                type: isRest ? "rest" : "training",
+                meals_template: isRest ? "rest_day" : "training_day",
+                workout_template: weekday,
+                week: Math.floor((d - 1) / 7) + 1
+            });
+        }
+        return p;
+    }
 
-function generateDefaultCalendar(plan){
-  if (Array.isArray(plan.calendar) && plan.calendar.length === plan.meta.duration_days) return plan;
-  const p = clone(plan); p.calendar = [];
-  for (let d=1; d<=p.meta.duration_days; d++){
-    const weekday = WEEKDAYS[(d-1)%7];
-    const isRest = p.meta.rest_days.includes(weekday);
-    p.calendar.push({
-      day: d, weekday,
-      type: isRest ? "rest" : "training",
-      meals_template: isRest ? "rest_day" : "training_day",
-      workout_template: weekday,
-      week: Math.floor((d-1)/7)+1
+    function buildDayCards(planDay, plan) {
+        const cards = [];
+        const mealTpl = plan.templates.meals[planDay.meals_template];
+        mealTpl.meals.forEach((m, i) => {
+            cards.push({
+                id: `d${planDay.day}-meal-${i}`,
+                kind: 'meal',
+                title: m.name,
+                items: m.items,
+                day: planDay.day
+            });
+        });
+        const wo = plan.templates.workouts[planDay.workout_template];
+        if (wo && wo.duration_minutes > 0) {
+            cards.push({
+                id: `d${planDay.day}-workout-0`,
+                kind: 'workout',
+                title: wo.type,
+                duration: wo.duration_minutes,
+                day: planDay.day
+            });
+        }
+        return cards;
+    }
+
+    function buildState(plan) {
+        const s = {plan: clone(plan), days: {}};
+        s.plan = generateDefaultCalendar(s.plan);
+        s.plan.calendar.forEach(day => {
+            s.days[day.day] = buildDayCards(day, s.plan);
+        });
+        return s;
+    }
+
+    let state = loadState() || buildState(DEFAULT_PLAN);
+    renderAll();
+
+    /******************* RENDER *******************/
+    function renderAll() {
+        $("#planName").textContent = state.plan.metadata.plan_name;
+        $("#planNote").textContent = state.plan.metadata.notes;
+        renderCalendarGrid();
+        updateTotals();
+    }
+
+    function renderCalendarGrid() {
+        const cal = $("#calendar");
+        cal.innerHTML = "";
+
+        // Weekday headings
+        WEEKDAYS.forEach(w => {
+            const h = document.createElement('div');
+            h.className = 'weekday';
+            h.textContent = w;
+            cal.appendChild(h);
+        });
+
+        // Day cells
+        state.plan.calendar.forEach(day => {
+            const cell = document.createElement('div');
+            cell.className = 'day';
+            cell.dataset.day = day.day;
+
+            const header = document.createElement('div');
+            header.className = 'day-header';
+            header.innerHTML = `<span class="date">Day ${day.day}</span><span class="badges"><span class="badge ${day.type}">${day.type}</span><span class="badge">${day.weekday}</span></span>`;
+
+            const stack = document.createElement('div');
+            stack.className = 'stack';
+            stack.dataset.day = day.day;
+
+            // precise drop targets on the stack element
+            stack.addEventListener('dragover', onStackDragOver);
+            stack.addEventListener('drop', onStackDrop);
+            stack.addEventListener('dragleave', onStackDragLeave);
+
+            const showMeals = $("#toggleMeals").checked;
+            const showWorkouts = $("#toggleWorkouts").checked;
+            (state.days[day.day] || []).forEach(card => {
+                if ((card.kind === 'meal' && !showMeals) || (card.kind === 'workout' && !showWorkouts)) return;
+                stack.appendChild(renderCard(card));
+            });
+
+            cell.appendChild(header);
+            cell.appendChild(stack);
+            cal.appendChild(cell);
+        });
+    }
+
+    function renderCard(card) {
+        const el = document.createElement('div');
+        el.className = `card ${card.kind}`;
+        el.id = card.id;
+        el.draggable = true;
+        el.addEventListener('dragstart', onDragStart);
+        el.addEventListener('dragend', onDragEnd);
+        if (card.kind === 'meal') {
+            el.innerHTML = `<div><div class="card-title">🥗 ${card.title}</div><small>${(card.items || []).slice(0, 2).join(', ')}${(card.items || []).length > 2 ? '…' : ''}</small></div>`;
+        } else {
+            el.innerHTML = `<div><div class="card-title">🏋️ ${card.title}</div><small>Duration: ${card.duration} min</small></div>`;
+        }
+        return el;
+    }
+
+    /**************** Drag & Drop (precise) ****************/
+    let dragData = null; // {id, fromDay}
+    let dropIndicator = document.createElement('div');
+    dropIndicator.className = 'drop-indicator';
+
+    function onDragStart(e) {
+        const id = e.currentTarget.id;
+        const fromDay = findDayOfCard(id);
+        dragData = {id, fromDay};
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', id);
+    }
+
+    function onDragEnd() {
+        dragData = null;
+        document.querySelectorAll('.day').forEach(d => d.classList.remove('drag-over'));
+        if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
+    }
+
+    function onStackDragOver(e) {
+        if (!dragData) return;
+        e.preventDefault();
+        const stack = e.currentTarget;
+        const dayEl = stack.closest('.day');
+        dayEl.classList.add('drag-over');
+        const idx = getDropIndex(stack, e.clientY);
+        showDropIndicator(stack, idx);
+    }
+
+    function onStackDrop(e) {
+        if (!dragData) return;
+        e.preventDefault();
+        const stack = e.currentTarget;
+        const toDay = Number(stack.dataset.day);
+        const toIndex = getDropIndex(stack, e.clientY);
+        moveCardAt(dragData.id, dragData.fromDay, toDay, toIndex);
+        const dayEl = stack.closest('.day');
+        dayEl.classList.remove('drag-over');
+        if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
+    }
+
+    function onStackDragLeave(e) {
+        const stack = e.currentTarget;
+        const dayEl = stack.closest('.day');
+        dayEl.classList.remove('drag-over');
+        if (dropIndicator.parentElement === stack) stack.removeChild(dropIndicator);
+    }
+
+    function getDropIndex(stackEl, clientY) {
+        const cards = Array.from(stackEl.querySelectorAll('.card'));
+        for (let i = 0; i < cards.length; i++) {
+            const r = cards[i].getBoundingClientRect();
+            const mid = r.top + r.height / 2;
+            if (clientY < mid) return i;
+        }
+        return cards.length;
+    }
+
+    function showDropIndicator(stackEl, index) {
+        const cards = Array.from(stackEl.querySelectorAll('.card'));
+        if (!dropIndicator.parentElement || dropIndicator.parentElement !== stackEl) {
+            if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
+            stackEl.appendChild(dropIndicator);
+        }
+        if (index >= cards.length) {
+            stackEl.appendChild(dropIndicator);
+        } else {
+            stackEl.insertBefore(dropIndicator, cards[index]);
+        }
+    }
+
+    function findDayOfCard(cardId) {
+        for (const [day, cards] of Object.entries(state.days)) {
+            if ((cards || []).some(c => c.id === cardId)) return Number(day);
+        }
+        return null;
+    }
+
+    function moveCardAt(cardId, fromDay, toDay, toIndex) {
+        const fromList = state.days[fromDay] || [];
+        const i = fromList.findIndex(c => c.id === cardId);
+        if (i === -1) return;
+        const [card] = fromList.splice(i, 1);
+        const toList = state.days[toDay] = state.days[toDay] || [];
+        // update id and day to keep uniqueness per day
+        card.id = card.id.replace(/d\d+/, `d${toDay}`);
+        card.day = toDay;
+        if (toIndex < 0) toIndex = 0;
+        if (toIndex > toList.length) toIndex = toList.length;
+        toList.splice(toIndex, 0, card);
+        persistState();
+        renderCalendarGrid();
+        updateTotals();
+    }
+
+    /**************** Totals & Persistence ****************/
+    function updateTotals() {
+        const train = state.plan.templates.meals.training_day.calories;
+        const rest = state.plan.templates.meals.rest_day.calories;
+        document.getElementById('totals').textContent = `Templates → Training: ${train} kcal • Rest: ${rest} kcal`;
+    }
+
+    function persistState() {
+        localStorage.setItem('fitnessCalendarState', JSON.stringify(state));
+    }
+
+    function loadState() {
+        try {
+            const raw = localStorage.getItem('fitnessCalendarState');
+            if (!raw) return null;
+            const s = JSON.parse(raw);
+            if (!s.plan || !s.days) return null;
+            return s;
+        } catch {
+            return null;
+        }
+    }
+
+    /**************** Controls ****************/
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const data = JSON.stringify(state, null, 2);
+        const blob = new Blob([data], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'fitness_calendar.json';
+        a.click();
+        URL.revokeObjectURL(url);
     });
-  }
-  return p;
-}
 
-function buildDayCards(planDay, plan){
-  const cards = [];
-  const mealTpl = plan.templates.meals[planDay.meals_template];
-  mealTpl.meals.forEach((m,i)=>{
-    cards.push({ id:`d${planDay.day}-meal-${i}`, kind:'meal', title:m.name, items:m.items, day:planDay.day });
-  });
-  const wo = plan.templates.workouts[planDay.workout_template];
-  if (wo && wo.duration_minutes>0){
-    cards.push({ id:`d${planDay.day}-workout-0`, kind:'workout', title:wo.type, duration:wo.duration_minutes, day:planDay.day });
-  }
-  return cards;
-}
-
-function buildState(plan){
-  const s = { plan: clone(plan), days: {} };
-  s.plan = generateDefaultCalendar(s.plan);
-  s.plan.calendar.forEach(day => { s.days[day.day] = buildDayCards(day, s.plan); });
-  return s;
-}
-
-let state = loadState() || buildState(DEFAULT_PLAN);
-renderAll();
-
-/******************* RENDER *******************/
-function renderAll(){
-  $("#planName").textContent = state.plan.meta.plan_name;
-  $("#planNote").textContent = state.plan.meta.notes;
-  renderCalendarGrid();
-  updateTotals();
-}
-
-function renderCalendarGrid(){
-  const cal = $("#calendar");
-  cal.innerHTML = "";
-
-  // Weekday headings
-  WEEKDAYS.forEach(w=>{
-    const h = document.createElement('div');
-    h.className = 'weekday'; h.textContent = w; cal.appendChild(h);
-  });
-
-  // Day cells
-  state.plan.calendar.forEach(day => {
-    const cell = document.createElement('div');
-    cell.className = 'day'; cell.dataset.day = day.day;
-
-    const header = document.createElement('div');
-    header.className = 'day-header';
-    header.innerHTML = `<span class="date">Day ${day.day}</span><span class="badges"><span class="badge ${day.type}">${day.type}</span><span class="badge">${day.weekday}</span></span>`;
-
-    const stack = document.createElement('div');
-    stack.className = 'stack';
-    stack.dataset.day = day.day;
-
-    // precise drop targets on the stack element
-    stack.addEventListener('dragover', onStackDragOver);
-    stack.addEventListener('drop', onStackDrop);
-    stack.addEventListener('dragleave', onStackDragLeave);
-
-    const showMeals = $("#toggleMeals").checked;
-    const showWorkouts = $("#toggleWorkouts").checked;
-    (state.days[day.day]||[]).forEach(card => {
-      if ((card.kind==='meal' && !showMeals) || (card.kind==='workout' && !showWorkouts)) return;
-      stack.appendChild(renderCard(card));
+    document.getElementById('importInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            const text = await file.text();
+            const imported = JSON.parse(text);
+            if (imported.plan && imported.days) {
+                state = imported;
+            } else {
+                const plan = imported.metadata ? imported : DEFAULT_PLAN;
+                state = buildState(plan);
+            }
+            persistState();
+            renderAll();
+        } catch {
+            alert('Invalid JSON file.');
+        } finally {
+            e.target.value = '';
+        }
     });
 
-    cell.appendChild(header);
-    cell.appendChild(stack);
-    cal.appendChild(cell);
-  });
-}
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!confirm('Reset calendar to default template?')) return;
+        state = buildState(DEFAULT_PLAN);
+        persistState();
+        renderAll();
+    });
 
-function renderCard(card){
-  const el = document.createElement('div');
-  el.className = `card ${card.kind}`; el.id = card.id; el.draggable = true;
-  el.addEventListener('dragstart', onDragStart); el.addEventListener('dragend', onDragEnd);
-  if (card.kind==='meal'){
-    el.innerHTML = `<div><div class="card-title">🥗 ${card.title}</div><small>${(card.items||[]).slice(0,2).join(', ')}${(card.items||[]).length>2?'…':''}</small></div>`;
-  } else {
-    el.innerHTML = `<div><div class="card-title">🏋️ ${card.title}</div><small>Duration: ${card.duration} min</small></div>`;
-  }
-  return el;
-}
+    document.getElementById('toggleMeals').addEventListener('change', renderCalendarGrid);
 
-/**************** Drag & Drop (precise) ****************/
-let dragData = null; // {id, fromDay}
-let dropIndicator = document.createElement('div');
-dropIndicator.className = 'drop-indicator';
-
-function onDragStart(e){
-  const id = e.currentTarget.id;
-  const fromDay = findDayOfCard(id);
-  dragData = { id, fromDay };
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', id);
-}
-
-function onDragEnd(){
-  dragData = null;
-  document.querySelectorAll('.day').forEach(d=>d.classList.remove('drag-over'));
-  if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
-}
-
-function onStackDragOver(e){
-  if (!dragData) return; e.preventDefault();
-  const stack = e.currentTarget; const dayEl = stack.closest('.day');
-  dayEl.classList.add('drag-over');
-  const idx = getDropIndex(stack, e.clientY);
-  showDropIndicator(stack, idx);
-}
-
-function onStackDrop(e){
-  if (!dragData) return; e.preventDefault();
-  const stack = e.currentTarget; const toDay = Number(stack.dataset.day);
-  const toIndex = getDropIndex(stack, e.clientY);
-  moveCardAt(dragData.id, dragData.fromDay, toDay, toIndex);
-  const dayEl = stack.closest('.day'); dayEl.classList.remove('drag-over');
-  if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
-}
-
-function onStackDragLeave(e){
-  const stack = e.currentTarget; const dayEl = stack.closest('.day');
-  dayEl.classList.remove('drag-over');
-  if (dropIndicator.parentElement === stack) stack.removeChild(dropIndicator);
-}
-
-function getDropIndex(stackEl, clientY){
-  const cards = Array.from(stackEl.querySelectorAll('.card'));
-  for (let i=0;i<cards.length;i++){
-    const r = cards[i].getBoundingClientRect();
-    const mid = r.top + r.height/2;
-    if (clientY < mid) return i;
-  }
-  return cards.length;
-}
-
-function showDropIndicator(stackEl, index){
-  const cards = Array.from(stackEl.querySelectorAll('.card'));
-  if (!dropIndicator.parentElement || dropIndicator.parentElement !== stackEl){
-    if (dropIndicator.parentElement) dropIndicator.parentElement.removeChild(dropIndicator);
-    stackEl.appendChild(dropIndicator);
-  }
-  if (index >= cards.length){ stackEl.appendChild(dropIndicator); }
-  else { stackEl.insertBefore(dropIndicator, cards[index]); }
-}
-
-function findDayOfCard(cardId){
-  for (const [day, cards] of Object.entries(state.days)){
-    if ((cards||[]).some(c=>c.id===cardId)) return Number(day);
-  }
-  return null;
-}
-
-function moveCardAt(cardId, fromDay, toDay, toIndex){
-  const fromList = state.days[fromDay] || []; const i = fromList.findIndex(c=>c.id===cardId);
-  if (i === -1) return; const [card] = fromList.splice(i,1);
-  const toList = state.days[toDay] = state.days[toDay] || [];
-  // update id and day to keep uniqueness per day
-  card.id = card.id.replace(/d\d+/, `d${toDay}`); card.day = toDay;
-  if (toIndex < 0) toIndex = 0; if (toIndex > toList.length) toIndex = toList.length;
-  toList.splice(toIndex, 0, card);
-  persistState(); renderCalendarGrid(); updateTotals();
-}
-
-/**************** Totals & Persistence ****************/
-function updateTotals(){
-  const train = state.plan.templates.meals.training_day.calories;
-  const rest = state.plan.templates.meals.rest_day.calories;
-  document.getElementById('totals').textContent = `Templates → Training: ${train} kcal • Rest: ${rest} kcal`;
-}
-
-function persistState(){ localStorage.setItem('fitnessCalendarState', JSON.stringify(state)); }
-function loadState(){ try{ const raw = localStorage.getItem('fitnessCalendarState'); if (!raw) return null; const s = JSON.parse(raw); if (!s.plan||!s.days) return null; return s; } catch { return null; } }
-
-/**************** Controls ****************/
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], { type:'application/json' });
-  const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = 'fitness_calendar.json'; a.click(); URL.revokeObjectURL(url);
-});
-
-document.getElementById('importInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0]; if (!file) return;
-  try {
-    const text = await file.text(); const imported = JSON.parse(text);
-    if (imported.plan && imported.days){ state = imported; }
-    else { const plan = imported.meta ? imported : DEFAULT_PLAN; state = buildState(plan); }
-    persistState(); renderAll();
-  } catch { alert('Invalid JSON file.'); }
-  finally { e.target.value = ''; }
-});
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if (!confirm('Reset calendar to default template?')) return;
-  state = buildState(DEFAULT_PLAN); persistState(); renderAll();
-});
-
-document.getElementById('toggleMeals').addEventListener('change', renderCalendarGrid);
-
-document.getElementById('toggleWorkouts').addEventListener('change', renderCalendarGrid);
+    document.getElementById('toggleWorkouts').addEventListener('change', renderCalendarGrid);
 </script>
 </body>
 </html>
